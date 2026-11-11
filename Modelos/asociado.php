@@ -1,6 +1,9 @@
 <?php
-require_once __DIR__.'../Config/conexion.php';
-class Asociado{
+
+require_once __DIR__ . '/../Config/conexion.php';
+
+class Asociado
+{
     private $documento;
     private $nombres;
     private $apellidos;
@@ -8,39 +11,44 @@ class Asociado{
     private $genero;
     private $direccionResidencia;
     private $ciudad;
-    private $email;
     private $telefono;
+    private $email;
+    private $contraseña;
 
     private $conexion;
 
-    public function __construct($datos){
-        $this->documento = $datos['documento'];
-        $this->nombres = $datos['nombres'];
-        $this->apellidos = $datos['apellidos'];
-        $this->fechaNacimiento = $datos['fechaNacimiento'];
-        $this->genero = $datos['genero'];
-        $this->direccionResidencia = $datos['direccionResidencia'];
-        $this->ciudad = $datos['ciudad'];
-        $this->email = $datos['email'];
-        $this->telefono = $datos['telefono'];
+    public function __construct(array $datos)
+    {
+        $this->documento = $datos['documento'] ?? null;
+        $this->nombres = $datos['nombres'] ?? null;
+        $this->apellidos = $datos['apellidos'] ?? null;
+        $this->fechaNacimiento = $datos['fechaNacimiento'] ?? null;
+        $this->genero = $datos['genero'] ?? null;
+        $this->direccionResidencia = $datos['direccionResidencia'] ?? null;
+        $this->ciudad = $datos['ciudad'] ?? null;
+        $this->email = $datos['email'] ?? null;
+        $this->telefono = $datos['telefono'] ?? null;
+        $this->contraseña= password_hash($datos['contraseña'], PASSWORD_DEFAULT);
 
         $conexionDB = new Conexion();
         $this->conexion = $conexionDB->conectar();
     }
+    public function guardar(): bool
+    {
+        $sql = "INSERT INTO asociados (documento, nombres, apellidos, fechaNacimiento, genero, direccionResidencia, ciudad, email, telefono, contraseña)
+                VALUES (:documento, :nombres, :apellidos, :fechaNacimiento, :genero, :direccionResidencia, :ciudad, :email, :telefono, :contraseña)";
+        $consulta = $this->conexion->prepare($sql);
 
-    public function guardar(){
-    $sql = "INSERT INTO asociados (documento, nombres, apellidos, fechaNacimiento, genero, direccionResidencia, ciudad, email, telefono) VALUES (:documento, :nombres, :apellidos, :fechaNacimiento, :genero, :direccionResidencia, :ciudad, :email, :telefono)";
-    $consulta = $this->conexion->prepare($sql);
-    return $consulta->execute([
-        ":documento" => $this->documento,
-        ":nombres" => $this->nombres,
-        ":apellidos" => $this->apellidos,
-        ":fechaNacimiento" => $this->fechaNacimiento,
-        ":genero" => $this->genero,
-        ":direccionResidencia" => $this->direccionResidencia,
-        ":ciudad" => $this->ciudad,
-        ":email" => $this->email,
-        ":telefono" => $this->telefono
-    ]);
+        return $consulta->execute([
+            ':documento' => $this->documento,
+            ':nombres' => $this->nombres,
+            ':apellidos' => $this->apellidos,
+            ':fechaNacimiento' => $this->fechaNacimiento,
+            ':genero' => $this->genero,
+            ':direccionResidencia' => $this->direccionResidencia,
+            ':ciudad' => $this->ciudad,
+            ':email' => $this->email,
+            ':telefono' => $this->telefono,
+        ]);
     }
 }

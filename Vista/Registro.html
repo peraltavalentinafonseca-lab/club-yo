@@ -8,26 +8,30 @@
     <body>
         <div>
             <h2> Registro de Asociado - Acerias </h2>
-            <form id="Formulario Registro" action="../Modelos/guardarAsociado.php" method="post"> 
+            <form id="FormularioRegistro" action="../Modelos/guardarAsociado.php" method="post" accept-charset="UTF-8">
                 <div class="grupo-input">
                     <label> Ingresar Documento: </label>
-                    <input id="Documento" type="number" name="Documento" required placeholder="Ejemplo: 1053555550">
+                    <input id="Documento" type="text" name="documento" inputmode="numeric" required placeholder="Ejemplo: 1053555550">
                 </div>
                 <div class="grupo-input">
                     <label> Ingresar Nombre: </label>
-                    <input id="Nombre" type="text" name="Nombre" required placeholder="Ingrese su nombre completo">
+                    <input id="Nombre" type="text" name="nombres" required placeholder="Ingrese su nombre completo">
                 </div>
                 <div class="grupo-input">
                     <label> Ingresar Apellidos: </label>
-                      <input id="Apellidos" type="text" name="Apellidos" required placeholder="Ingrese sus apellidos completos">
+                      <input id="Apellidos" type="text" name="apellidos" required placeholder="Ingrese sus apellidos completos">
                 </div>
                 <div class="grupo-input">
-                    <label> Dirección de Residencia: </label>
-                    <input id="DirecciónResidencia" type="text" name="DirecciónResidencia" required placeholder="Ejemplo: Calle 24">
+                    <label>Ingresar Fecha de Nacimiento</label>
+                    <input id="fechaNacimiento" name="fechaNacimiento" type="date" required placeholder="Ingrese Fecha de Nacimiento">
+                </div>
+                <div class="grupo-input">
+                    <label> dirección de Residencia: </label>
+                    <input id="direccionResidencia" type="text" name="direccionResidencia" required placeholder="Ejemplo: Calle 24">
                 </div>
                 <div class="grupo-input">
                     <label> Ciudad: </label>
-                    <select id="Ciudad" name="Ciudad" required>
+                    <select id="ciudad" name="ciudad" required>
                         <option value="Sogamoso">Sogamoso </option>
                           <option value="Duitama">Duitama </option> 
                             <option value="Tunja">Tunja </option>                     
@@ -36,26 +40,61 @@
                 </div>
                 <div class="grupo-input">
                     <label> Telefono:  </label>
-                    <input id= "Telefono" type="tel" name="Telefono" required placeholder="Ejemplo: 3225828590">
+                    <input id= "telefono" type="tel" name="telefono" required placeholder="Ejemplo: 3225828590">
                 </div>
                  <div class="grupo-input">
                     <label> Ingrese su email: </label>
-                    <input id= "Email" type="text" name="Email" required placeholder="Ejemplo: pepita@gmail.com">
+                    <input id= "email" type="text" name="email" required placeholder="Ejemplo: pepita@gmail.com">
                 </div>
-               <div class="grupo-input">
-                    <label>Ingresar Genero:</label>
-                    <input type="radio" id="Femenino" name= "Genero" value="Femenino" required> 
-                    <label>Femenino</label>
-                    <input type="radio" id="Masculino" name="Genero" values="Masculino" required> 
-                    <label>Masculino</label>
-                    <input type="radio" id="Otro" name="Genero" values="Otro" required> 
-                    <label>Otro</label>
+                <div class="grupo-input">
+                    <label>Crea un contraseña:</label>
+                    <input 
+                    type="password"
+                    id="contraseña" 
+                    name="contraseña"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                    placeholder="Minimo 8 caracteres"
+                    >
                 </div>
+                <div class="grupo-input">
+                    <label>Confirme su contraseña:</label>
+                    <input 
+                    type="password"
+                    id="confirmarContraseña" 
+                    name="confirmarContraseña"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                    placeholder="Escribe la nueva contraseña"
+                    >
+                </div>
+              
+        
+              <div class="grupo-input">
+                    <label>Seleccione su Genero</label>
+                    <label>
+                        <input type="radio" id="Femenino" name="genero" value="Femenino" required>
+                        <span>Femenino</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="Masculino" name="genero" value="Masculino" required>
+                        <span>Masculino</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="Otro" name="genero" value="Otro" required>
+                        <span>Otro</span>
+                    </label>
+                </div>
+
                 <div>
                     <button type="submit"> Guardar </button>
                 </div>
-                <p id = "Mensaje Registro" role="status" aria-live="polite"></p>
+                <p id="MensajeRegistro" role="status" aria-live="polite"></p>
             </form>
         </div>
     </body>
+    <script src="../Controladores/asociado.js"> </script>
+
 </html>
