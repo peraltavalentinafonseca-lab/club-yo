@@ -1,92 +1,31 @@
-const formulario = document.getElementById("FormularioRegistro") || document.getElementById("formAsociados");
+const formulario = document.getElementById("Formulario Registro");
 
 if (formulario) {
     formulario.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const botonGuardar = formulario.querySelector('button[type="submit"]');
-        const Asociado = Object.fromEntries(new FormData(formulario).entries());
-        const mensajeEl = document.getElementById("mensajeRegistro");
+    const botonGuardar = formulario.querySelector(button[type = "submit"]);
 
-        const pass = Asociado.contrasena || Asociado.contraseña || Asociado.password || Asociado.clave || "";
-        const confirmPass = Asociado.confirmarContrasena || Asociado.confirmarContraseña || Asociado.confirmPassword;
+    // lee los campos del formulario y los convierte en un objeto 
+    const asociado = Object.fromEntries(new FormData(formulario).entries());
 
-        // 1. Validar longitud mínima de 8 caracteres (sin permitir subir el formulario si es menor)
-        if (!pass || pass.length < 8) {
-            if (mensajeEl) {
-                mensajeEl.textContent = "La contraseña debe tener mínimo 8 caracteres.";
-                mensajeEl.style.color = "red";
-                mensajeEl.style.fontWeight = "bold";
-            } else {
-                alert("La contraseña debe tener mínimo 8 caracteres.");
-            }
-            return; // Detiene el envío
+    botonGuardar.disabled = true; // Deshabilitar el boton mientras se procesa la solicitud
+
+    try {
+        const respuesta = await fetch(formulario.action, { method: 'POST', headers: { 'Content - Type': 'application/json' }, body: JSON.parse.stringify(asociado) });
+        const resultado = await respuesta.json();
+        document.getElementById("Mensaje Registro").textContent = "Guardando...";
+        document.getElementById("Mensaje Registro").dataset.tipo='';
+        document.getElementById("Mensaje Registro").textContent= resultado.mensaje;
+
+        if(respuesta.ok && resultado.success){
+            formulario.reset();
         }
-
-        // 2. Comparar contraseñas si existe campo de confirmación
-        if (confirmPass !== undefined && confirmPass !== "" && pass !== confirmPass) {
-            if (mensajeEl) {
-                mensajeEl.textContent = "Las contraseñas no coinciden.";
-                mensajeEl.style.color = "red";
-                mensajeEl.style.fontWeight = "bold";
-            } else {
-                alert("Las contraseñas no coinciden.");
-            }
-            return; // Detiene el envío
-        }
-
-        // Limpiar campos de confirmación y asegurar contrasena sin ñ
-        delete Asociado.confirmarContraseña;
-        delete Asociado.confirmarContrasena;
-        delete Asociado.confirmPassword;
-        delete Asociado.contraseña;
-        Asociado.contrasena = pass;
-
-        if (botonGuardar) botonGuardar.disabled = true;
-
-        if (mensajeEl) {
-            mensajeEl.textContent = "Guardando...";
-            mensajeEl.style.color = "#333";
-            mensajeEl.style.fontWeight = "bold";
-        }
-
-        try {
-            const urlDestino = formulario.action || '../Modelo/guardarAsociado.php';
-            const respuesta = await fetch(urlDestino, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(Asociado)
-            });
-
-            let resultado;
-            try {
-                resultado = await respuesta.json();
-            } catch {
-                throw new Error(`El servidor respondió con HTTP ${respuesta.status}, pero no devolvió JSON.`);
-            }
-
-            if (mensajeEl) {
-                mensajeEl.textContent = resultado.message;
-                mensajeEl.style.color = resultado.success ? "green" : "red";
-                mensajeEl.style.fontWeight = "bold";
-                mensajeEl.style.marginTop = "10px";
-            } else {
-                alert(resultado.message);
-            }
-
-            if (respuesta.ok && resultado.success) {
-                formulario.reset();
-            }
-        } catch (error) {
-            console.error("Error al enviar el formulario: ", error);
-            if (mensajeEl) {
-                mensajeEl.textContent = error.message || "Ocurrió un error al enviar el formulario.";
-                mensajeEl.style.color = "red";
-            } else {
-                alert(error.message || "Ocurrió un error al enviar el formulario.");
-            }
-        } finally {
-            if (botonGuardar) botonGuardar.disabled = false;
-        }
-    });
-}
+    } catch (error) {
+        console.error("Error al enviar el formulario:", error);
+        document.getElementById("Mensaje Registro").textContent =
+        "Ocurrio un error al enviar el formulario. Por favor, intente de nuevo .";
+    } finally {
+        botonGuardar.disabled = false;
+    }
+});
