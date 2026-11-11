@@ -10,7 +10,7 @@
 <body>
     <div>
         <h2>Inicio de Sesión</h2>
-        <form id="formLogin" action="" method="POST">
+        <form id="formLogin" action="../Modelos/iniciarsesion.php" method="POST">
             <div class="grupo-input">
                 <label for="email" required>Correo</label>
                 <input type="email" id="email" name="Email" required placeholder="ejemplo@gmail.com" />
@@ -30,6 +30,7 @@
             ¿No tienes una cuenta? <a href="Registro.html">Regístrate aquí</a>
         </p>
     </div>
+    <p id="mensajeLogin" class = "text_danger mt-3 mb-0" style="text-align: center; font-size: 14px;"></p>
 </body>
 <script src="../Controladores/login.js"> </script>
 

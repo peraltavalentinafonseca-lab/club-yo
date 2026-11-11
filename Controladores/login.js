@@ -1,22 +1,37 @@
-const usuarios = [
-    { usuario: 'mesaivy13@gmail.com', clave: '123', rol: 'admin', nombre: 'Admin Claudia' },
-    { usuario: 'pepito@gmail.com', clave: '123', rol: 'asociado', nombre: 'Juan Perez' }
-];
+const formulario = document.getElementById("formLogin");
 
-document.getElementById('formLogin').addEventListener('submit', function (e) {
+formulario.addEventListener('submit', async function (e) {
     e.preventDefault();
-    const usuarioinput = document.getElementById('email').value;
-    const contraseñainput = document.getElementById('password').value;
 
-    const usuarioEncontrado = usuarios.find(
-        u => u.usuario === usuarioinput && u.clave === contraseñainput
-    );
-    if (usuarioEncontrado) {
+    const boton = formulario.querySelector('button[type="submit"]');
+    const mensaje = document.getElementById("mensajeLogin");
+
+    boton.disabled = true;
+    mensaje.textContent = "";
+
+    try {
+        const respuesta = await fetch(formulario.action, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(Object.fromEntries(new FormData(formulario).entries()))
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!resultado.success) {
+            mensaje.textContent = "No fue posible iniciar sesión, verifique su usuario o contraseña.";
+            return;
+        }
+
         localStorage.setItem('logueado', 'true');
-        localStorage.setItem('rol', usuarioEncontrado.rol);
-        localStorage.setItem('nombre', usuarioEncontrado.nombre);
-        window.location.href = 'dashboard.html';
-    } else {
-        alert('Usuario o contraseña incorrectos');
+        localStorage.setItem('rol', resultado.rol);
+        localStorage.setItem('nombre', resultado.nombre);
+
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        console.error("Error al iniciar sesión", error);
+        mensaje.textContent = "Ocurrió un error al iniciar sesión, por favor vuelve a intentarlo.";
+    } finally {
+        boton.disabled = false;
     }
 });

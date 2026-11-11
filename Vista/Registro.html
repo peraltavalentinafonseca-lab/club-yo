@@ -8,7 +8,7 @@
     <body>
         <div>
             <h2> Registro de Asociado - Acerias </h2>
-            <form id="FormularioRegistro" action="../Modelos/guardarAsociado.php" method="post" accept-charset="UTF-8">
+            <form id="FormularioRegistro" action="../Modelos/guardarAsociado.php" method="post" accept-charset="UTF-8" onsubmit="return validarFormulario(event)">
                 <div class="grupo-input">
                     <label> Ingresar Documento: </label>
                     <input id="Documento" type="text" name="documento" inputmode="numeric" required placeholder="Ejemplo: 1053555550">
@@ -44,7 +44,7 @@
                 </div>
                  <div class="grupo-input">
                     <label> Ingrese su email: </label>
-                    <input id= "email" type="text" name="email" required placeholder="Ejemplo: pepita@gmail.com">
+                    <input id= "email" type="email" name="email" required placeholder="Ejemplo: pepita@gmail.com">
                 </div>
                 <div class="grupo-input">
                     <label>Crea un contraseña:</label>
@@ -95,6 +95,42 @@
             </form>
         </div>
     </body>
+    <script>
+        function validarFormulario(event) {
+            const form = document.getElementById('FormularioRegistro');
+            const password = document.getElementById('contraseña');
+            const confirmarPassword = document.getElementById('confirmarContraseña');
+            const email = document.getElementById('email');
+            const mensaje = document.getElementById('MensajeRegistro');
+
+            mensaje.textContent = '';
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+
+            if (password.value.length < 8) {
+                mensaje.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
+                password.focus();
+                return false;
+            }
+
+            if (password.value !== confirmarPassword.value) {
+                mensaje.textContent = 'Las contraseñas no coinciden.';
+                confirmarPassword.focus();
+                return false;
+            }
+
+            if (!email.validity.valid) {
+                mensaje.textContent = 'Ingrese un correo electrónico válido.';
+                email.focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
     <script src="../Controladores/asociado.js"> </script>
 
 </html>

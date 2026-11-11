@@ -49,6 +49,7 @@ class Asociado
             ':ciudad' => $this->ciudad,
             ':email' => $this->email,
             ':telefono' => $this->telefono,
+            ':contraseña' => $this->contraseña
         ]);
     }
 }
