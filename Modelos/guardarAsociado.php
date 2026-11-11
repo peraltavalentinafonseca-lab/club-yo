@@ -22,7 +22,7 @@ try {
     }
 
     // Normalizar contraseña y validaciones
-    $pass = $datos['contrasena'] ?? ($datos['contraseña'] ?? ($datos['password'] ?? ($datos['Password'] ?? ($datos['clave'] ?? ''))));
+    $pass = $datos['contraseña'] ?? ($datos['contraseña'] ?? ($datos['password'] ?? ($datos['Password'] ?? ($datos['clave'] ?? ''))));
     $confirmPass = $datos['confirmarContrasena'] ?? ($datos['confirmarContraseña'] ?? ($datos['confirmPassword'] ?? null));
 
     if (trim((string)$pass) === '') {
@@ -54,6 +54,8 @@ try {
     $ema = $datos['email'] ?? ($datos['Email'] ?? '');
     $gen = $datos['genero'] ?? ($datos['Genero'] ?? '');
     $fec = $datos['fechaNacimiento'] ?? ($datos['FechaNacimiento'] ?? '');
+    $rol = $datos['rol'] ?? ($datos['Rol'] ?? 'Asociado');
+    $contraseña = $pass;
 
     $datosNormalizados = [
         'documento' => trim((string)$doc),
@@ -65,7 +67,7 @@ try {
         'email' => trim((string)$ema),
         'genero' => trim((string)$gen),
         'fechaNacimiento' => trim((string)$fec),
-        'contrasena' => $pass,
+        'contraseña' => $pass,
         'rol' => $datos['rol'] ?? ($datos['Rol'] ?? 'Asociado')
     ];
 

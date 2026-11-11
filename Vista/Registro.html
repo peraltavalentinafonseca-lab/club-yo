@@ -9,97 +9,116 @@
     <body>
         <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 480px; width: 100%;">
             <h2>Registro de Asociado - Acerias</h2>
-            <form id="formRegistro" action="../Modelos/guardarAsociado.php" method="POST"> 
+            <!-- Se corrigió el id para que coincida con el script -->
+            <form id="FormularioRegistro" action="../Modelos/guardarAsociado.php" method="POST" onsubmit="return validarFormulario(event)"> 
                 <div class="grupo-input">
                     <label for="Documento">Documento:</label>
                     <input id="Documento" type="number" name="documento" required placeholder="Ejemplo: 1053555550">
                 </div>
+            
                 <div class="grupo-input">
-                    <label> Ingresar Documento: </label>
-                    <input id="Documento" type="number" name="Documento" required placeholder="Ejemplo: 1053555550">
-                </div>
-                <div class="grupo-input">
-                    <label> Ingresar Nombre: </label>
+                    <label for="Nombre"> Ingresar Nombre: </label>
                     <input id="Nombre" type="text" name="Nombre" required placeholder="Ingrese su nombre completo">
                 </div>
                 <div class="grupo-input">
-                    <label> Ingresar Apellidos: </label>
-                      <input id="Apellidos" type="text" name="Apellidos" required placeholder="Ingrese sus apellidos completos">
+                    <label for="Apellidos"> Ingresar Apellidos: </label>
+                    <input id="Apellidos" type="text" name="Apellidos" required placeholder="Ingrese sus apellidos completos">
                 </div>
                 <div class="grupo-input">
-                    <label> Dirección de Residencia: </label>
-                    <input id="DirecciónResidencia" type="text" name="DirecciónResidencia" required placeholder="Ejemplo: Calle 24">
+    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+    <input id="fechaNacimiento" type="date" name="fechaNacimiento" required>
+</div>
+                <div class="grupo-input">
+                    <label for="direccionResidencia"> dirección de Residencia: </label>
+                    <input id="direccionResidencia" type="text" name="direccionResidencia" required placeholder="Ejemplo: Calle 24">
                 </div>
                 <div class="grupo-input">
-                    <label> Ciudad: </label>
+                    <label for="Ciudad"> Ciudad: </label>
                     <select id="Ciudad" name="Ciudad" required>
-                        <option value="Sogamoso">Sogamoso </option>
-                          <option value="Duitama">Duitama </option> 
-                            <option value="Tunja">Tunja </option>                     
-
+                        <option value="Sogamoso">Sogamoso</option>
+                        <option value="Duitama">Duitama</option> 
+                        <option value="Tunja">Tunja</option>                    
                     </select>
                 </div>
                 <div class="grupo-input">
-                    <label> Telefono:  </label>
-                    <input id= "Telefono" type="tel" name="Telefono" required placeholder="Ejemplo: 3225828590">
+                    <label for="contraseña"> Ingrese su contraseña: </label>
+                    <!-- ID cambiado a minúscula para coincidir con JS -->
+                    <input id="contraseña" type="password" name="contraseña" required placeholder="Ejemplo: ********">
+                </div>
+                <div class="grupo-input">
+                    <label for="confirmarContraseña"> Confirmar Contraseña: </label>
+                    <!-- ID cambiado para coincidir con JS -->
+                    <input id="confirmarContraseña" type="password" name="ConfirmarContraseña" required placeholder="Ejemplo: ********">
+                </div>
+                <div class="grupo-input">
+                    <label for="telefono"> Telefono: </label>
+                    <input id="telefono" type="tel" name="telefono" required placeholder="Ejemplo: 3225828590">
                 </div>
                  <div class="grupo-input">
-                    <label> Ingrese su email: </label>
-                    <input id= "Email" type="text" name="Email" required placeholder="Ejemplo: pepita@gmail.com">
+                    <label for="email"> Ingrese su email: </label>
+                    <!-- ID cambiado a minúscula -->
+                    <input id="email" type="email" name="email" required placeholder="Ejemplo: pepita@gmail.com">
                 </div>
                <div class="grupo-input">
                     <label>Ingresar Genero:</label>
-                    <input type="radio" id="Femenino" name= "Genero" value="Femenino" required> 
-                    <label>Femenino</label>
-                    <input type="radio" id="Masculino" name="Genero" values="Masculino" required> 
-                    <label>Masculino</label>
-                    <input type="radio" id="Otro" name="Genero" values="Otro" required> 
-                    <label>Otro</label>
+                    <input type="radio" id="Femenino" name="Genero" value="Femenino" required> 
+                    <label for="Femenino">Femenino</label>
+                    
+                    <!-- Se corrigió 'values' por 'value' -->
+                    <input type="radio" id="Masculino" name="Genero" value="Masculino" required> 
+                    <label for="Masculino">Masculino</label>
+                    
+                    <!-- Se corrigió 'values' por 'value' -->
+                    <input type="radio" id="Otro" name="Genero" value="Otro" required> 
+                    <label for="Otro">Otro</label>
                 </div>
                 <div>
                     <button type="submit"> Guardar </button>
                 </div>
-                <p id = "Mensaje Registro" role="status" aria-live="polite"></p>
+                <!-- Se eliminó el espacio en el ID para que coincida con JS -->
+                <p id="MensajeRegistro" role="status" aria-live="polite" style="color: red;"></p>
             </form>
         </div>
+
+        <!-- Script de validación local -->
+        <script>
+            function validarFormulario(event) {
+                const form = document.getElementById('FormularioRegistro');
+                const password = document.getElementById('contrasena');
+                const confirmarPassword = document.getElementById('confirmarContrasena');
+                const email = document.getElementById('email');
+                const mensaje = document.getElementById('MensajeRegistro');
+
+                mensaje.textContent = '';
+
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
+
+                if (password.value.length < 8) {
+                    mensaje.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
+                    password.focus();
+                    return false;
+                }
+
+                if (password.value !== confirmarPassword.value) {
+                    mensaje.textContent = 'Las contraseñas no coinciden.';
+                    confirmarPassword.focus();
+                    return false;
+                }
+
+                if (!email.validity.valid) {
+                    mensaje.textContent = 'Ingrese un correo electrónico válido.';
+                    email.focus();
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+        
+        <!-- Tu archivo controlador externo (asegúrate de que exista en esa ruta) -->
         <script src="../Controladores/asociado.js"></script>
     </body>
-    <script>
-        function validarFormulario(event) {
-            const form = document.getElementById('FormularioRegistro');
-            const password = document.getElementById('contraseña');
-            const confirmarPassword = document.getElementById('confirmarContraseña');
-            const email = document.getElementById('email');
-            const mensaje = document.getElementById('MensajeRegistro');
-
-            mensaje.textContent = '';
-
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return false;
-            }
-
-            if (password.value.length < 8) {
-                mensaje.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
-                password.focus();
-                return false;
-            }
-
-            if (password.value !== confirmarPassword.value) {
-                mensaje.textContent = 'Las contraseñas no coinciden.';
-                confirmarPassword.focus();
-                return false;
-            }
-
-            if (!email.validity.valid) {
-                mensaje.textContent = 'Ingrese un correo electrónico válido.';
-                email.focus();
-                return false;
-            }
-
-            return true;
-        }
-    </script>
-    <script src="../Controladores/asociado.js"> </script>
-
 </html>
