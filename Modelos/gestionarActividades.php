@@ -12,7 +12,34 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 return $datos;
 
 }
-try{
+
+function validarActividad($datos){
+    $nombre=$datos['nombreActividad'] ?? null;
+    $fecha = $datos['fechaEvento']  ?? null;
+    $municipio = $datos['municipio'] ?? null;
+    if (!is_string($nombre) || trim($nombre) === "" || strlen($nombre) > 100 || !is_string($municipio) || trim($municipio) === "" || strlen($municipio) > 50){
+        http_response_code(400);
+        throw new Exception(
+            "Ingrese un nombre y municipio validos"
+        );
+    }
+    return[
+        "nombreActividad"=>trim($nombre),
+        "fechaEvento"=>$fecha,
+        "municipio"=> trim($municipio)
+    ];                                                                                                                             
+
+}
+function validarId($id){
+    $idActividad=filter_var($id,FILTER_VALIDATE_INT,["options" => ["min_range" => 1]]);
+    if ($idActividad === false) {
+        http_response_code(400);
+        throw new Exception("El identificador de la actividad no es válido");
+        
+    }
+}
+
+        try{
     if (!isset($_SESSION["documento"], $_SESSION["rol"])) {
     http_response_code(401);
     throw new Exception("Inicia sesión para consultar las actividades");
@@ -49,13 +76,46 @@ switch($metodo){
         ];
         http_response_code(201);
         break;
+    case "PUT": 
+        $datos=leerDatos();
+        $datos=["idActividad"]=validarId($datos["idActividad"] ?? null);
+        $datos= array_merge($datos, validarActividad($datos));
+
+        if(!$actividad->editar($datos)){
+            http_response_code(404);
+            throw new Exception("No se encontró la actividad");
+        }
+        $resultado =[
+                "success"=> true,
+                "message" => "Actividad actualizada exitosamente"
+            ];
+            http_response_code(200);
+            break;
+        case "DELETE":
+            $datos =  leerDatos();
+            $idActividad= validarId($datos["idActividad"] ?? null);
+
+              if(!$actividad->eliminar($idActividad)){
+            http_response_code(404);
+            throw new Exception("No se encontró la actividad");
+        }
+        $resultado =[
+                "success"=> true,
+                "message" => "Actividad eliminada correctamente"
+            ];
+            http_response_code(200);
+            break;
+            
 }
 echo json_encode($resultado);
 }catch(PDOException $e){
     http_response_code(500);
     echo json_encode([
         "success"=> false,
-        "message"=> $e->getMessage()
+        "message"=> "Error en la base de datos:" . $e->getMessage()
     ]);
-
+}catch (Exeption $e) {
+    echo json_encode ([
+        "success" => $e->getMessage()
+    ]);
 }
