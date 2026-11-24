@@ -41,6 +41,9 @@
             transform: scale(1.05);
             box-shadow: 0 10px #622e9e !important;
         }
+        .tarjeta-enlace {
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -49,22 +52,25 @@
         <h3>CLUB ACERIAS - Panel principal</h3>
         <div class="text-end">
             <small id="nombreUsuario"></small>
-            <button class="btn btn-danger btn-sm" onclick="cerrarSecion()"><i class="bi bi-person-heart"></i>Cerrar sesión</button>
+            <button class="btn btn-danger btn-sm" onclick="cerrarSecion()"><i class="bi bi-person-heart"></i>Cerrar 
+                sesión</button>
         </div>
     </div>
     <div class="container py-4">
         <h5 class="mb-4 fw-bold">Módulos del club de asociados</h5>
         <div id="tarjetasAdministrador" class="row g-4">
             <div class="col-md-3">
-                <div class="card modulo-card shadow-sm p-3">
-                    <i class="bi bi-people icono-principal"></i>
-                    <h4 class="text-dark">Asociados</h4>
-                    <strong>Gestión de asociados</strong>
-                    <p class="small text-muted mt-2">
-                        Administra el registro completo de asociados con sus datos personales: documento, nombres,
-                        apellidos, fecha de nacimiento, dirección, teléfono y correo electrónico.
-                    </p>
-                </div>
+                <a href="asociados.html" class="tarjeta-enlace">
+                    <div class="card modulo-card shadow-sm p-3">
+                        <i class="bi bi-people icono-principal"></i>
+                        <h4 class="text-dark">Asociados</h4>
+                        <strong>Gestión de asociados</strong>
+                        <p class="small text-muted mt-2">
+                            Administra el registro completo de asociados con sus datos personales: documento, nombres,
+                            apellidos, fecha de nacimiento, dirección, teléfono y correo electrónico.
+                        </p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
                 <div class="card modulo-card shadow-sm p-3">
@@ -78,15 +84,17 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card modulo-card shadow-sm p-3">
-                    <i class="bi bi-calendar-check-fill icono-principal"></i>
-                    <h4 class="text-dark">Actividades</h4>
-                    <strong>Gestión de actividades</strong>
-                    <p class="small text-muted mt-2">
-                        Administra los eventos anuales de recaudo, la lista de participantes y la distribución
-                        automática del recaudo.
-                    </p>
-                </div>
+                <a href="actividades.html" class="tarjeta-enlace">
+                    <div class="card modulo-card shadow-sm p-3">
+                        <i class="bi bi-calendar-check-fill icono-principal"></i>
+                        <h4 class="text-dark">Actividades</h4>
+                        <strong>Gestión de actividades</strong>
+                        <p class="small text-muted mt-2">
+                            Administra los eventos anuales de recaudo, la lista de participantes y la distribución
+                            automática del recaudo.
+                        </p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
                 <div class="card modulo-card shadow-sm p-3">
@@ -129,15 +137,17 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card modulo-card asociado shadow-sm p-3">
-                    <i class="bi bi-calendar-check-fill icono-principal"></i>
-                    <h4 class="text-dark">Actividades</h4>
-                    <strong>Participación y Recaudo</strong>
-                    <p class="small text-muted mt-2">
-                        Inscríbete libremente en los eventos anuales del club y consulta el dinero recaudado junto con
-                        el 50% distribuido entre los asociados participantes.
-                    </p>
-                </div>
+                <a href="actividades.html" class="tarjeta-enlace">
+                    <div class="card modulo-card asociado shadow-sm p-3">
+                        <i class="bi bi-calendar-check-fill icono-principal"></i>
+                        <h4 class="text-dark">Actividades</h4>
+                        <strong>Participación y Recaudo</strong>
+                        <p class="small text-muted mt-2">
+                            Inscríbete libremente en los eventos anuales del club y consulta el dinero recaudado junto con
+                            el 50% distribuido entre los asociados participantes.
+                        </p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
                 <div class="card modulo-card asociado shadow-sm p-3">

@@ -8,7 +8,7 @@ private $conexion;
 public function __construct() 
 {
     $conexion = new Conexion();
-    $this->conexion = $conexionDB -> conectar();
+    $this->conexion = $conexion->conectar();
 }
 
 public function obtenerActividades(){
@@ -17,23 +17,22 @@ public function obtenerActividades(){
     $consulta->execute();
     return $consulta -> fetchAll();
 }
-public function guardar ();
-$sql = "INSERT INTO actividades (nombreActividad, fechaEvento, municipio)
-        VALUES (:nombreActividad, :fechaEvento, :municipio)";
-$consulta = $this->conexion->prepare($sql);
-return $consulta->execute([
-    ":nombreActividad" => $datos['nombreActividad'],
-    ":fechaEvento" => $datos ['fechaEvento'],
-    ":municipio" => $datos ['municipio'],
-]);
-
-}
-
-public function eliminar ($idActividad)
+public function guardar($datos)
 {
-    $sql = "DELETE FROM actividades WHERE idActividad = :idActividad";
+    $sql = "INSERT INTO actividades (nombreActividad, fechaEvento, municipio, totalRecaudado)
+            VALUES (:nombreActividad, :fechaEvento, :municipio, :totalRecaudado)";
     $consulta = $this->conexion->prepare($sql);
-    $consulta->exucute([':idActividad' => $idActividad]);
+    return $consulta->execute([
+        ":nombreActividad" => $datos['nombreActividad'],
+        ":fechaEvento" => $datos['fechaEvento'],
+        ":municipio" => $datos['municipio'],
+        ":totalRecaudado" => $datos['totalRecaudado'] ?? 0,
+    ]);
+}
+public function eliminar ($idActividad){
+     $sql = "DELETE FROM actividades WHERE idActividad = :idActividad";
+    $consulta = $this->conexion->prepare($sql);
+    $consulta->execute([':idActividad' => $idActividad]);
     return $consulta ->rowCount() > 0; // Retorna true si se elimino alguna fila
 }
 public function editar ($datos){
@@ -42,10 +41,10 @@ public function editar ($datos){
     return $consulta->execute([
         ":nombreActividad" => $datos['nombreActividad'],
         ":fechaEvento" => $datos['fechaEvento'],
-        ":municipio" => $datos['totalRecaudado'],
+        ":municipio" => $datos['municipio'],
+        ":totalRecaudado" => $datos['totalRecaudado'],
         ":idActividad" => $datos['idActividad']
     ]);
-    
     if($consulta->rowCount()> 0) {
         return true;
     }
@@ -53,4 +52,5 @@ public function editar ($datos){
     $verificar->execute([':idActividad' => $datos['idActividad']]);
     
     return (bool) $verificar ->fetchColumn(); //Retorna true si el registro existe, false si no
-    }
+}
+}

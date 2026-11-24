@@ -57,6 +57,7 @@ try {
     $nombreCompleto = trim(($asociado['nombres'] ?? '') . ' ' . ($asociado['apellidos'] ?? ''));
 
     $_SESSION["Rol"] = strtolower((string)$rol);
+    $_SESSION["rol"] = strtolower((string)$rol);
     $_SESSION["documento"] = $asociado['documento'] ?? '';
     $_SESSION["nombre"] = $nombreCompleto;
 
