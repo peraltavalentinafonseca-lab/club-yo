@@ -88,10 +88,10 @@ function mostrarActividades() {
             acciones.append(botonEditar, botonEliminar);
             fila.append(acciones);
         }
-
         listaActividades.append(fila);
     });
 }
+
 function crearCelda(texto) {
     const celda = document.createElement("td");
     celda.textContent = texto;
