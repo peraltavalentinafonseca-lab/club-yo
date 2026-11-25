@@ -5,11 +5,12 @@ if (formulario) {
         event.preventDefault();
 
         const botonGuardar = formulario.querySelector('button[type="submit"]');
-        const mensajeEl = document.getElementById("mensajeRegistro");
+        const mensajeEl = document.getElementById("MensajeRegistro");
         const asociado = Object.fromEntries(new FormData(formulario).entries());
 
         if (asociado.contraseña !== asociado.confirmarContraseña) {
             if (mensajeEl) {
+                mensajeEl.dataset.tipo = "error";
                 mensajeEl.textContent = "Las contraseñas no coinciden.";
             }
             return;
@@ -21,31 +22,37 @@ if (formulario) {
 
         if (mensajeEl) {
             mensajeEl.textContent = "Guardando...";
-            mensajeEl.dataset.tipo = "";
+            mensajeEl.dataset.tipo = "cargando";
         }
 
         try {
-            const respuesta = await fetch(formulario.action, {
+            const urlDestino = formulario.getAttribute("action") || formulario.action;
+            const respuesta = await fetch(urlDestino, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
                 body: JSON.stringify(asociado)
             });
 
             const resultado = await respuesta.json();
+            const esExito = respuesta.ok && Boolean(resultado.success);
 
             if (mensajeEl) {
-                mensajeEl.dataset.tipo = respuesta.ok && resultado.success ? "ok" : "error";
-                mensajeEl.textContent = resultado.mensaje || resultado.message || "Proceso completado.";
+                mensajeEl.dataset.tipo = esExito ? "ok" : "error";
+                mensajeEl.textContent =
+                    resultado.mensaje ||
+                    resultado.message ||
+                    (esExito ? "Registro guardado correctamente." : "No se pudo completar el registro.");
             }
 
-            if (respuesta.ok && resultado.success) {
+            if (esExito) {
                 formulario.reset();
             }
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
             if (mensajeEl) {
                 mensajeEl.dataset.tipo = "error";
-                mensajeEl.textContent = "Ocurrió un error. Por favor, intentalo de nuevo.";
+                mensajeEl.textContent = "Ocurrió un error. Por favor, inténtalo de nuevo.";
             }
         } finally {
             if (botonGuardar) botonGuardar.disabled = false;

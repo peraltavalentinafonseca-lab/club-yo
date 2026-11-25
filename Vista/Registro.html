@@ -10,7 +10,7 @@
         <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 480px; width: 100%;">
             <h2>Registro de Asociado - Acerias</h2>
             <!-- Se corrigió el id para que coincida con el script -->
-            <form id="FormularioRegistro" action="../Modelos/guardarAsociado.php" method="POST" onsubmit="return validarFormulario(event)"> 
+            <form id="FormRegistro" action="../Modelos/guardarAsociado.php" method="POST" onsubmit="return validarFormulario(event)"> 
                 <div class="grupo-input">
                     <label for="Documento">Documento:</label>
                     <input id="Documento" type="number" name="documento" required placeholder="Ejemplo: 1053555550">
@@ -48,7 +48,7 @@
                 <div class="grupo-input">
                     <label for="confirmarContraseña"> Confirmar Contraseña: </label>
                     <!-- ID cambiado para coincidir con JS -->
-                    <input id="confirmarContraseña" type="password" name="ConfirmarContraseña" required placeholder="Ejemplo: ********">
+                    <input id="confirmarContraseña" type="password" name="confirmarContraseña" required placeholder="Ejemplo: ********">
                 </div>
                 <div class="grupo-input">
                     <label for="telefono"> Telefono: </label>
@@ -83,9 +83,9 @@
         <!-- Script de validación local -->
         <script>
             function validarFormulario(event) {
-                const form = document.getElementById('FormularioRegistro');
-                const password = document.getElementById('contrasena');
-                const confirmarPassword = document.getElementById('confirmarContrasena');
+                const form = document.getElementById('FormRegistro');
+                const password = document.getElementById('contraseña');
+                const confirmarPassword = document.getElementById('confirmarContraseña');
                 const email = document.getElementById('email');
                 const mensaje = document.getElementById('MensajeRegistro');
 

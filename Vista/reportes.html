@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>Reportes y Saldos - Proyecto ADSO</title>
+    <style>
+        .header-mr {
+            background-color: rgb(151, 83, 196);
+            color: white;
+            padding: 18px 30px;
+        }
+
+        .kpi-card {
+            border-left: 4px solid rgb(127, 14, 202);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="header-mr d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Reportes, Consultas y Saldos</h4>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-light btn-sm text-dark" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <a href="dashboard.html" class="btn btn-dark btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver al panel
+            </a>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div id="alertaReporte"></div>
+
+        <!-- Resumen financiero -->
+        <div class="row row-cols-1 row-cols-md-5 g-3 mb-4">
+            <div class="col">
+                <div class="card kpi-card shadow-sm p-3 h-100">
+                    <small class="text-muted">Total Asociados</small>
+                    <h4 id="kpiAsociados" class="fw-bold mt-1 mb-0">0</h4>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card kpi-card shadow-sm p-3 h-100">
+                    <small class="text-muted">Total Prestado</small>
+                    <h4 id="kpiPrestado" class="fw-bold mt-1 mb-0">$0</h4>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card kpi-card shadow-sm p-3 h-100">
+                    <small class="text-muted">Recaudo Cuotas</small>
+                    <h4 id="kpiPagado" class="fw-bold mt-1 mb-0">$0</h4>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card kpi-card shadow-sm p-3 h-100">
+                    <small class="text-muted">Saldo Cartera</small>
+                    <h4 id="kpiSaldo" class="fw-bold mt-1 mb-0">$0</h4>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card kpi-card shadow-sm p-3 h-100">
+                    <small class="text-muted">Recaudo Actividades</small>
+                    <h4 id="kpiActividades" class="fw-bold mt-1 mb-0">$0</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtro de búsqueda -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <label for="buscarReporte" class="form-label mb-1">Filtrar reportes</label>
+                        <input type="text" id="buscarReporte" class="form-control"
+                            placeholder="Buscar por asociado, documento, actividad o municipio...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado de cuenta por asociado -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Estado de cuenta y saldos por asociado</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Documento</th>
+                                <th>Asociado</th>
+                                <th>Préstamos</th>
+                                <th>Actividades</th>
+                                <th>Total prestado</th>
+                                <th>Total abonado</th>
+                                <th>Saldo pendiente</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEstadoAsociados">
+                            <tr>
+                                <td colspan="7" class="text-center py-3">Cargando reporte...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalle de cartera de préstamos -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Control detallado de cartera de préstamos</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Asociado</th>
+                                <th>Documento</th>
+                                <th>Fecha</th>
+                                <th>Valor préstamo</th>
+                                <th>Tasa</th>
+                                <th>Cuotas</th>
+                                <th>Abonado</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCarteraPrestamos">
+                            <tr>
+                                <td colspan="9" class="text-center py-3">Cargando cartera...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance histórico de actividades -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Balance histórico de recaudos por actividades</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Actividad</th>
+                                <th>Fecha</th>
+                                <th>Municipio</th>
+                                <th>Participantes</th>
+                                <th>Total recaudado</th>
+                                <th>50% Club</th>
+                                <th>50% Participantes</th>
+                                <th>Por participante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaBalanceActividades">
+                            <tr>
+                                <td colspan="9" class="text-center py-3">Cargando actividades...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Controladores/reportes.js"></script>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const logueado = localStorage.getItem('logueado');
     if (logueado !== 'true') {
-        window.location.href = '../Vistas/login.html';
+        window.location.href = 'login.html';
         return;
     }
     const nombre = localStorage.getItem('nombre') || 'Usuario';

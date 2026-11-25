@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>Mis Préstamos - CLUB ACERIAS</title>
+    <style>
+        :root {
+            --morado-oscuro: #3b1868;
+            --morado-principal: #6d28d9;
+            --morado-medio: #8b5cf6;
+            --morado-suave: #f3e8ff;
+            --morado-borde: #e9d5ff;
+            --fondo-app: #f7f5fc;
+            --texto-principal: #1e1b2e;
+            --texto-suave: #645d7a;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #ede9fe 0%, var(--fondo-app) 45%, #f3f0fa 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .topbar-morado {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 60%, var(--morado-medio) 100%);
+            color: #ffffff;
+            padding: 18px 28px;
+            box-shadow: 0 8px 24px rgba(76, 29, 149, 0.18);
+        }
+
+        .btn-volver-morado {
+            background-color: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-volver-morado:hover {
+            background-color: #ffffff;
+            color: var(--morado-oscuro);
+            border-color: #ffffff;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid var(--morado-borde);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 22px rgba(88, 28, 135, 0.05);
+            height: 100%;
+            transition: transform 0.18s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(88, 28, 135, 0.09);
+        }
+
+        .kpi-icono {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--morado-suave);
+            color: var(--morado-principal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .kpi-etiqueta {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--texto-suave);
+            font-weight: 700;
+        }
+
+        .kpi-valor {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--morado-oscuro);
+        }
+
+        .card-estetica {
+            background: #ffffff;
+            border: 1px solid var(--morado-borde);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(88, 28, 135, 0.06);
+            overflow: hidden;
+        }
+
+        .card-header-morado {
+            background: linear-gradient(90deg, var(--morado-oscuro), var(--morado-principal));
+            color: #ffffff;
+            padding: 16px 22px;
+            border: none;
+        }
+
+        /* Estilos aplicados a la tabla generada por misPrestamos.js */
+        #listaMisPrestamos .table {
+            margin-bottom: 0;
+        }
+
+        #listaMisPrestamos .table thead th,
+        #listaMisPrestamos .table thead.table-dark th {
+            background-color: var(--morado-suave);
+            color: var(--morado-oscuro);
+            border-bottom: 2px solid var(--morado-borde);
+            border-top: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+            padding: 13px 16px;
+            white-space: nowrap;
+        }
+
+        #listaMisPrestamos .table tbody td {
+            padding: 13px 16px;
+            vertical-align: middle;
+            border-color: #f1eafa;
+            color: var(--texto-principal);
+            white-space: nowrap;
+        }
+
+        #listaMisPrestamos .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: #fcfaff;
+            box-shadow: none;
+        }
+
+        #listaMisPrestamos .table-hover > tbody > tr:hover > * {
+            background-color: #f5ecff;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar-morado d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-cash-stack fs-4"></i>
+            <h4 class="mb-0 fw-bold">Mis Préstamos</h4>
+        </div>
+        <a href="dashboard.html" class="btn btn-volver-morado btn-sm text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i> Volver al panel
+        </a>
+    </header>
+
+    <main class="container py-4" style="max-width: 1020px;">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icono">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-etiqueta">Préstamos activos</div>
+                        <div id="totalPrestamosCount" class="kpi-valor">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icono">
+                        <i class="bi bi-piggy-bank"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-etiqueta">Monto acordado</div>
+                        <div id="totalMontoPrestamos" class="kpi-valor">$ 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="kpi-card d-flex align-items-center gap-3">
+                    <div class="kpi-icono">
+                        <i class="bi bi-calculator"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-etiqueta">Cuota aprox. mensual</div>
+                        <div id="totalCuotaAprox" class="kpi-valor">$ 0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-estetica">
+            <div class="card-header-morado d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-list-check fs-5"></i>
+                    <h5 class="mb-0 fw-semibold">Detalle de mis créditos</h5>
+                </div>
+                <a href="misPagos.html" class="btn btn-sm btn-light fw-semibold rounded-3" style="color: var(--morado-oscuro);">
+                    <i class="bi bi-wallet2 me-1"></i> Registrar pago
+                </a>
+            </div>
+
+            <div class="card-body p-0">
+                <div id="listaMisPrestamos" class="p-3 p-md-4">
+                    <div class="text-center py-4 text-muted">Cargando préstamos...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../Controladores/misPrestamos.js"></script>
+    <script>
+        // Actualiza las tarjetas resumen automáticamente cuando misPrestamos.js inserta la tabla
+        const observerPrestamos = new MutationObserver(() => {
+            const filas = document.querySelectorAll("#listaMisPrestamos tbody tr");
+            const formatoCOP = v => Number(v || 0).toLocaleString("es-CO", {
+                style: "currency",
+                currency: "COP",
+                maximumFractionDigits: 0
+            });
+
+            let cantidad = 0;
+            let sumaMonto = 0;
+            let sumaCuota = 0;
+
+            filas.forEach(tr => {
+                const celdas = tr.querySelectorAll("td");
+                if (celdas.length >= 6) {
+                    cantidad += 1;
+                    const montoNum = Number(celdas[1].textContent.replace(/[^\d]/g, "")) || 0;
+                    const cuotaNum = Number(celdas[5].textContent.replace(/[^\d]/g, "")) || 0;
+                    sumaMonto += montoNum;
+                    sumaCuota += cuotaNum;
+                }
+            });
+
+            document.getElementById("totalPrestamosCount").textContent = cantidad;
+            document.getElementById("totalMontoPrestamos").textContent = formatoCOP(sumaMonto);
+            document.getElementById("totalCuotaAprox").textContent = formatoCOP(sumaCuota);
+        });
+
+        const contenedorPrestamos = document.getElementById("listaMisPrestamos");
+        if (contenedorPrestamos) {
+            observerPrestamos.observe(contenedorPrestamos, { childList: true, subtree: true });
+        }
+    </script>
+</body>
+
+</html>

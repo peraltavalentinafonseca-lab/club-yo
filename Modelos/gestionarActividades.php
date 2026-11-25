@@ -39,7 +39,10 @@ function validarId($id) {
 }
 
 try {
-    if (!isset($_SESSION["documento"], $_SESSION["rol"])) {
+    $documentoSesion = trim((string)($_SESSION["documento"] ?? ""));
+    $rolSesion = strtolower(trim((string)($_SESSION["Rol"] ?? $_SESSION["rol"] ?? "")));
+
+    if ($documentoSesion === "" || $rolSesion === "") {
         http_response_code(401);
         throw new Exception("Inicia sesión para consultar las actividades");
     }
@@ -50,7 +53,7 @@ try {
         throw new Exception("Método HTTP no permitido");
     }
 
-    if ($metodo !== "GET" && $_SESSION["rol"] !== "admin") {
+    if ($metodo !== "GET" && !in_array($rolSesion, ["admin", "administrador"], true)) {
         http_response_code(403);
         throw new Exception("No tienes permisos para realizar esta acción");
     }
@@ -62,7 +65,7 @@ try {
         case "GET":
             $resultado = [
                 "success" => true,
-                "rol" => $_SESSION["rol"],
+                "rol" => $rolSesion,
                 "actividades" => $actividad->obtenerActividades()
             ];
             http_response_code(200);

@@ -28,7 +28,7 @@ if (formLogin) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     usuario: usuarioInput,
-                    contrasena: passwordInput
+                    contraseña: passwordInput
                 })
             });
 

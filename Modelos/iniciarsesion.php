@@ -53,10 +53,10 @@ try {
         throw new Exception('Usuario o contraseña incorrectos');
     }
 
-    $rol = $asociado['Rol'] ?? ($asociado['rol'] ?? 'Asociado');
+    $rol = strtolower(trim((string)($asociado['Rol'] ?? ($asociado['rol'] ?? 'asociado'))));
     $nombreCompleto = trim(($asociado['nombres'] ?? '') . ' ' . ($asociado['apellidos'] ?? ''));
 
-    $_SESSION["Rol"] = strtolower((string)$rol);
+    $_SESSION["rol"] = $rol;
     $_SESSION["documento"] = $asociado['documento'] ?? '';
     $_SESSION["nombre"] = $nombreCompleto;
 
@@ -72,11 +72,16 @@ try {
     http_response_code(500);
     echo json_encode([
         "success" => false,
+        "message" => "Error de base de datos: " . $e->getMessage(),
         "error" => "Error de base de datos: " . $e->getMessage()
     ]);
 } catch (Exception $e) {
+    if (http_response_code() === 200) {
+        http_response_code(400);
+    }
     echo json_encode([
         "success" => false,
+        "message" => $e->getMessage(),
         "error" => $e->getMessage()
     ]);
 }

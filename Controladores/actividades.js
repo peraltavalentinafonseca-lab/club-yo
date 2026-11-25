@@ -8,7 +8,8 @@ const modalActividad = new bootstrap.Modal(document.getElementById("modalActivid
 async function solicitarApi(metodo, datos) {
     const opciones = {
         method: metodo,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin"
     };
 
     if (metodo !== "GET" && datos) {

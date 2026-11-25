@@ -81,7 +81,7 @@ try {
         "email" => "Email",
         "genero" => "Género",
         "fechaNacimiento" => "Fecha de Nacimiento",
-        "contrasena" => "Contraseña"
+        "contraseña" => "Contraseña"
     ];
 
     foreach ($camposObligatorios as $clave => $etiqueta) {
