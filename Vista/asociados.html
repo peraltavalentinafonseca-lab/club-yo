@@ -1,26 +1,161 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <title>Asociados - Club Acerías</title>
+    <title>Asociados - CLUB ACERIAS</title>
+    <style>
+        :root {
+            --morado-oscuro: #3b1868;
+            --morado-principal: #6d28d9;
+            --morado-medio: #8b5cf6;
+            --morado-suave: #f3e8ff;
+            --morado-borde: #e9d5ff;
+            --fondo-app: #f7f5fc;
+            --texto-principal: #1e1b2e;
+            --texto-suave: #645d7a;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #ede9fe 0%, var(--fondo-app) 45%, #f3f0fa 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .topbar-morado {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 60%, var(--morado-medio) 100%);
+            color: #ffffff;
+            padding: 18px 28px;
+            box-shadow: 0 8px 24px rgba(76, 29, 149, 0.18);
+        }
+
+        .btn-salir-morado {
+            background-color: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-salir-morado:hover {
+            background-color: #ffffff;
+            color: var(--morado-oscuro);
+            border-color: #ffffff;
+        }
+
+        .tarjeta-morada {
+            background: #ffffff;
+            border: 1px solid var(--morado-borde);
+            border-radius: 18px;
+            box-shadow: 0 10px 28px rgba(88, 28, 135, 0.05);
+            overflow: hidden;
+        }
+
+        .titulo-seccion {
+            color: var(--morado-oscuro);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .tabla-morada thead th {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 100%);
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            padding: 12px 14px;
+        }
+
+        .tabla-morada tbody td {
+            border-color: #f1e9fe;
+            padding: 11px 14px;
+            vertical-align: middle;
+        }
+
+        .tabla-morada tbody tr:hover {
+            background-color: #faf5ff;
+        }
+
+        .btn-morado {
+            background: linear-gradient(135deg, var(--morado-principal), var(--morado-medio));
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-morado:hover {
+            color: #ffffff;
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(109, 40, 217, 0.25);
+        }
+
+        .modal-content {
+            border: 1px solid var(--morado-borde);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 100%);
+            color: #ffffff;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        .form-label {
+            color: var(--morado-oscuro);
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--morado-medio);
+            box-shadow: 0 0 0 0.2rem rgba(109, 40, 217, 0.16);
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <header class="bg-primary text-white px-4 py-3 d-flex justify-content-between align-items-center">
-        <h1 class="h3 mb-0">Datos de los asociados</h1>
-        <a class="btn btn-outline-light" href="dashboard.html">
-            <i class="bi bi-arrow-left"></i> Volver al panel
+
+<body>
+    <header class="topbar-morado d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-people-fill fs-4"></i>
+            <h4 class="mb-0 fw-bold">Datos de los asociados</h4>
+        </div>
+
+        <a class="btn btn-salir-morado btn-sm" href="dashboard.html">
+            <i class="bi bi-arrow-left me-1"></i> Volver al panel
         </a>
     </header>
 
-    <main class="container-fluid py-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
+    <main class="container-fluid py-4 px-lg-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div class="titulo-seccion mb-0">
+                <i class="bi bi-table me-1"></i> Registro general de asociados
+            </div>
+        </div>
+
+        <div class="tarjeta-morada">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle mb-0">
-                        <thead class="table-dark">
+                    <table class="table tabla-morada align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>Documento</th>
                                 <th>Nombres</th>
@@ -36,7 +171,9 @@
                             </tr>
                         </thead>
                         <tbody id="listaAsociados">
-                            <tr><td colspan="11" class="text-center py-4">Cargando asociados...</td></tr>
+                            <tr>
+                                <td colspan="11" class="text-center py-4 text-secondary">Cargando asociados...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -49,10 +186,12 @@
             <div class="modal-content">
                 <form id="formAsociado">
                     <div class="modal-header">
-                        <h2 class="modal-title fs-5">Editar asociado</h2>
+                        <h2 class="modal-title fs-5 fw-bold mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>Editar asociado
+                        </h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <input type="hidden" id="idAsociado">
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -92,15 +231,15 @@
                                 <label for="email" class="form-label">Correo</label>
                                 <input type="email" class="form-control" id="email" required>
                             </div>
-                            <div class="col-12 mb-3">
+                            <div class="col-12 mb-2">
                                 <label for="direccionResidencia" class="form-label">Dirección</label>
                                 <input type="text" class="form-control" id="direccionResidencia" required>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <div class="modal-footer bg-light border-0 px-4 py-3">
+                        <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-morado px-4">Guardar cambios</button>
                     </div>
                 </form>
             </div>
@@ -110,4 +249,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../Controladores/asociados.js"></script>
 </body>
+
 </html>

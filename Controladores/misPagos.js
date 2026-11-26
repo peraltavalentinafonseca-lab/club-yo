@@ -36,8 +36,9 @@ async function solicitar(metodo, datos = null) {
     }
 
     if (respuesta.status === 401) {
+        localStorage.clear();
         window.location.href = "login.html";
-        return;
+        return null;
     }
 
     if (!respuesta.ok || !resultado.success) {
@@ -52,35 +53,45 @@ async function cargarPagos() {
         const resultado = await solicitar("GET");
         if (!resultado) return;
 
-        mostrarPrestamos(resultado.prestamos || []);
-        mostrarPagos(resultado.pagos || []);
+        const esAdmin = Boolean(resultado.esAdmin);
+        mostrarPrestamos(resultado.prestamos || [], esAdmin);
+        mostrarPagos(resultado.pagos || [], esAdmin);
     } catch (error) {
         lista.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">${error.message}</td></tr>`;
     }
 }
 
-function mostrarPrestamos(prestamos) {
+function mostrarPrestamos(prestamos, esAdmin = false) {
     if (prestamos.length === 0) {
-        selectPrestamo.replaceChildren(new Option("No tienes préstamos registrados", ""));
+        selectPrestamo.replaceChildren(new Option(
+            esAdmin ? "No hay préstamos registrados" : "No tienes préstamos registrados",
+            ""
+        ));
         return;
     }
 
     selectPrestamo.replaceChildren(new Option("Seleccione un préstamo", ""));
 
     prestamos.forEach(prestamo => {
+        const infoAsociado = esAdmin && prestamo.nombres
+            ? ` - ${prestamo.nombres} ${prestamo.apellidos || ""} (${prestamo.documento || ""})`
+            : "";
+
         selectPrestamo.add(new Option(
-            `Préstamo #${prestamo.idPrestamo} - ${moneda(prestamo.valorPrestamo)} - ${prestamo.numeroCuotas} cuotas`,
+            `Préstamo #${prestamo.idPrestamo}${infoAsociado} - ${moneda(prestamo.valorPrestamo)} - ${prestamo.numeroCuotas} cuotas`,
             prestamo.idPrestamo
         ));
     });
 }
 
-function mostrarPagos(pagos) {
+function mostrarPagos(pagos, esAdmin = false) {
     lista.replaceChildren();
     let total = 0;
 
     if (pagos.length === 0) {
-        lista.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">No tienes pagos registrados.</td></tr>';
+        lista.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">${
+            esAdmin ? "No hay pagos registrados." : "No tienes pagos registrados."
+        }</td></tr>`;
         document.getElementById("totalPagado").textContent = "Total: " + moneda(0);
         return;
     }
@@ -89,9 +100,13 @@ function mostrarPagos(pagos) {
         total += Number(pago.valorCuota);
         const fila = document.createElement("tr");
 
+        const refPrestamo = esAdmin && pago.nombres
+            ? `#${pago.idPrestamo} - ${pago.nombres} ${pago.apellidos || ""}`
+            : `#${pago.idPrestamo}`;
+
         [
             `#${pago.idPago}`,
-            `#${pago.idPrestamo}`,
+            refPrestamo,
             moneda(pago.valorCuota),
             pago.fechaPago
         ].forEach(texto => {
@@ -125,7 +140,9 @@ form.addEventListener("submit", async evento => {
         mensaje.textContent = "Guardando pago...";
         mensaje.className = "small fw-bold mb-3 text-secondary";
 
-        await solicitar("POST", datos);
+        const resultado = await solicitar("POST", datos);
+        if (!resultado) return;
+
         form.reset();
         ponerFechaHoy();
 

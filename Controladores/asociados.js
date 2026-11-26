@@ -6,17 +6,21 @@ const formulario = document.getElementById("formAsociado");
 async function api(metodo, datos = null) {
     const opciones = {
         method: metodo,
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" }
     };
     if (datos) opciones.body = JSON.stringify(datos);
 
     const respuesta = await fetch("../Modelos/gestionarAsociados.php", opciones);
-    const resultado = await respuesta.json();
 
     if (respuesta.status === 401) {
+        localStorage.clear();
         window.location.href = "login.html";
-        return;
+        return null;
     }
+
+    const resultado = await respuesta.json();
+
     if (!respuesta.ok || !resultado.success) {
         throw new Error(resultado.message || resultado.mensaje || "Error en la solicitud");
     }
@@ -26,6 +30,7 @@ async function api(metodo, datos = null) {
 async function cargarAsociados() {
     try {
         const resultado = await api("GET");
+        if (!resultado) return;
         mostrarAsociados(resultado.asociados || []);
     } catch (error) {
         alert(error.message);
@@ -98,7 +103,8 @@ async function eliminarAsociado(asociado) {
     if (!confirm(`¿Desea eliminar al asociado ${asociado.nombres} ${asociado.apellidos}?`)) return;
 
     try {
-        await api("DELETE", { idAsociado: asociado.idAsociado });
+        const resultado = await api("DELETE", { idAsociado: asociado.idAsociado });
+        if (!resultado) return;
         await cargarAsociados();
         alert("Asociado eliminado correctamente.");
     } catch (error) {
@@ -123,7 +129,8 @@ formulario.addEventListener("submit", async evento => {
     };
 
     try {
-        await api("PUT", datos);
+        const resultado = await api("PUT", datos);
+        if (!resultado) return;
         modal.hide();
         await cargarAsociados();
         alert("Asociado actualizado correctamente.");

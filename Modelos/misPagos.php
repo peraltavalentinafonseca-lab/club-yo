@@ -11,6 +11,9 @@ try {
         throw new Exception('Inicia sesión para consultar tus pagos');
     }
 
+    $rol = strtolower(trim((string)($_SESSION['rol'] ?? $_SESSION['Rol'] ?? '')));
+    $esAdmin = in_array($rol, ['admin', 'administrador'], true);
+
     $conexion = (new Conexion())->conectar();
 
     $consultaAsociado = $conexion->prepare('SELECT idAsociado FROM asociados WHERE documento = :documento LIMIT 1');
@@ -26,21 +29,39 @@ try {
     $metodo = $_SERVER['REQUEST_METHOD'];
 
     if ($metodo === 'GET') {
-        $consultaPrestamos = $conexion->prepare('SELECT idPrestamo, valorPrestamo, numeroCuotas
-                                                 FROM prestamos
-                                                 WHERE idAsociado = :idAsociado
-                                                 ORDER BY fechaPrestamo DESC, idPrestamo DESC');
-        $consultaPrestamos->execute([':idAsociado' => $idAsociado]);
+        if ($esAdmin) {
+            $consultaPrestamos = $conexion->prepare('SELECT p.idPrestamo, p.valorPrestamo, p.numeroCuotas, p.idAsociado,
+                                                            a.documento, a.nombres, a.apellidos
+                                                     FROM prestamos p
+                                                     INNER JOIN asociados a ON a.idAsociado = p.idAsociado
+                                                     ORDER BY p.fechaPrestamo DESC, p.idPrestamo DESC');
+            $consultaPrestamos->execute();
 
-        $consultaPagos = $conexion->prepare('SELECT pg.idPago, pg.valorCuota, pg.fechaPago, pg.idPrestamo
-                                             FROM pagos_cuotas pg
-                                             INNER JOIN prestamos p ON p.idPrestamo = pg.idPrestamo
-                                             WHERE p.idAsociado = :idAsociado
-                                             ORDER BY pg.fechaPago DESC, pg.idPago DESC');
-        $consultaPagos->execute([':idAsociado' => $idAsociado]);
+            $consultaPagos = $conexion->prepare('SELECT pg.idPago, pg.valorCuota, pg.fechaPago, pg.idPrestamo,
+                                                         a.documento, a.nombres, a.apellidos
+                                                 FROM pagos_cuotas pg
+                                                 INNER JOIN prestamos p ON p.idPrestamo = pg.idPrestamo
+                                                 INNER JOIN asociados a ON a.idAsociado = p.idAsociado
+                                                 ORDER BY pg.fechaPago DESC, pg.idPago DESC');
+            $consultaPagos->execute();
+        } else {
+            $consultaPrestamos = $conexion->prepare('SELECT idPrestamo, valorPrestamo, numeroCuotas, idAsociado
+                                                     FROM prestamos
+                                                     WHERE idAsociado = :idAsociado
+                                                     ORDER BY fechaPrestamo DESC, idPrestamo DESC');
+            $consultaPrestamos->execute([':idAsociado' => $idAsociado]);
+
+            $consultaPagos = $conexion->prepare('SELECT pg.idPago, pg.valorCuota, pg.fechaPago, pg.idPrestamo
+                                                 FROM pagos_cuotas pg
+                                                 INNER JOIN prestamos p ON p.idPrestamo = pg.idPrestamo
+                                                 WHERE p.idAsociado = :idAsociado
+                                                 ORDER BY pg.fechaPago DESC, pg.idPago DESC');
+            $consultaPagos->execute([':idAsociado' => $idAsociado]);
+        }
 
         echo json_encode([
             'success' => true,
+            'esAdmin' => $esAdmin,
             'prestamos' => $consultaPrestamos->fetchAll(PDO::FETCH_ASSOC),
             'pagos' => $consultaPagos->fetchAll(PDO::FETCH_ASSOC)
         ]);
@@ -67,17 +88,29 @@ try {
         throw new Exception('Complete correctamente el préstamo, el valor y la fecha');
     }
 
-    $consultaPrestamo = $conexion->prepare('SELECT idPrestamo FROM prestamos
-                                            WHERE idPrestamo = :idPrestamo AND idAsociado = :idAsociado
-                                            LIMIT 1');
-    $consultaPrestamo->execute([
-        ':idPrestamo' => $idPrestamo,
-        ':idAsociado' => $idAsociado
-    ]);
+    if ($esAdmin) {
+        $consultaPrestamo = $conexion->prepare('SELECT idPrestamo FROM prestamos
+                                                WHERE idPrestamo = :idPrestamo
+                                                LIMIT 1');
+        $consultaPrestamo->execute([':idPrestamo' => $idPrestamo]);
 
-    if (!$consultaPrestamo->fetch()) {
-        http_response_code(403);
-        throw new Exception('El préstamo no pertenece a tu cuenta');
+        if (!$consultaPrestamo->fetch()) {
+            http_response_code(404);
+            throw new Exception('El préstamo seleccionado no existe');
+        }
+    } else {
+        $consultaPrestamo = $conexion->prepare('SELECT idPrestamo FROM prestamos
+                                                WHERE idPrestamo = :idPrestamo AND idAsociado = :idAsociado
+                                                LIMIT 1');
+        $consultaPrestamo->execute([
+            ':idPrestamo' => $idPrestamo,
+            ':idAsociado' => $idAsociado
+        ]);
+
+        if (!$consultaPrestamo->fetch()) {
+            http_response_code(403);
+            throw new Exception('El préstamo no pertenece a tu cuenta');
+        }
     }
 
     $consultaPago = $conexion->prepare('INSERT INTO pagos_cuotas (valorCuota, fechaPago, idPrestamo)

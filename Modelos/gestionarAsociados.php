@@ -5,13 +5,15 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . '/../Config/conexion.php';
 
 try {
-    if (!isset($_SESSION['documento'], $_SESSION['rol'])) {
+    $documentoSesion = trim((string)($_SESSION['documento'] ?? ''));
+    $rolSesion = strtolower(trim((string)($_SESSION['rol'] ?? $_SESSION['Rol'] ?? '')));
+
+    if ($documentoSesion === '' || $rolSesion === '') {
         http_response_code(401);
         throw new Exception('Inicia sesión para consultar los asociados');
     }
 
-    $rol = strtolower((string)$_SESSION['rol']);
-    if (!in_array($rol, ['admin', 'administrador'], true)) {
+    if (!in_array($rolSesion, ['admin', 'administrador'], true)) {
         http_response_code(403);
         throw new Exception('Solo un administrador puede gestionar asociados');
     }
