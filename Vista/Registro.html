@@ -1,124 +1,262 @@
-<html lang="es"> 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Proyecto ADSO - Registro</title>
-        <link rel="stylesheet" href="../Assets/css/estilos.css">
-    </head>
+<!DOCTYPE html>
+<html lang="es">
 
-    <body>
-        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 480px; width: 100%;">
-            <h2>Registro de Asociado - Acerias</h2>
-            <!-- Se corrigió el id para que coincida con el script -->
-            <form id="FormRegistro" action="../Modelos/guardarAsociado.php" method="POST" onsubmit="return validarFormulario(event)"> 
-                <div class="grupo-input">
-                    <label for="Documento">Documento:</label>
-                    <input id="Documento" type="number" name="documento" required placeholder="Ejemplo: 1053555550">
-                </div>
-            
-                <div class="grupo-input">
-                    <label for="Nombre"> Ingresar Nombre: </label>
-                    <input id="Nombre" type="text" name="Nombre" required placeholder="Ingrese su nombre completo">
-                </div>
-                <div class="grupo-input">
-                    <label for="Apellidos"> Ingresar Apellidos: </label>
-                    <input id="Apellidos" type="text" name="Apellidos" required placeholder="Ingrese sus apellidos completos">
-                </div>
-                <div class="grupo-input">
-    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-    <input id="fechaNacimiento" type="date" name="fechaNacimiento" required>
-</div>
-                <div class="grupo-input">
-                    <label for="direccionResidencia"> dirección de Residencia: </label>
-                    <input id="direccionResidencia" type="text" name="direccionResidencia" required placeholder="Ejemplo: Calle 24">
-                </div>
-                <div class="grupo-input">
-                    <label for="Ciudad"> Ciudad: </label>
-                    <select id="Ciudad" name="Ciudad" required>
-                        <option value="Sogamoso">Sogamoso</option>
-                        <option value="Duitama">Duitama</option> 
-                        <option value="Tunja">Tunja</option>                    
-                    </select>
-                </div>
-                <div class="grupo-input">
-                    <label for="contraseña"> Ingrese su contraseña: </label>
-                    <!-- ID cambiado a minúscula para coincidir con JS -->
-                    <input id="contraseña" type="password" name="contraseña" required placeholder="Ejemplo: ********">
-                </div>
-                <div class="grupo-input">
-                    <label for="confirmarContraseña"> Confirmar Contraseña: </label>
-                    <!-- ID cambiado para coincidir con JS -->
-                    <input id="confirmarContraseña" type="password" name="confirmarContraseña" required placeholder="Ejemplo: ********">
-                </div>
-                <div class="grupo-input">
-                    <label for="telefono"> Telefono: </label>
-                    <input id="telefono" type="tel" name="telefono" required placeholder="Ejemplo: 3225828590">
-                </div>
-                 <div class="grupo-input">
-                    <label for="email"> Ingrese su email: </label>
-                    <!-- ID cambiado a minúscula -->
-                    <input id="email" type="email" name="email" required placeholder="Ejemplo: pepita@gmail.com">
-                </div>
-               <div class="grupo-input">
-                    <label>Ingresar Genero:</label>
-                    <input type="radio" id="Femenino" name="Genero" value="Femenino" required> 
-                    <label for="Femenino">Femenino</label>
-                    
-                    <!-- Se corrigió 'values' por 'value' -->
-                    <input type="radio" id="Masculino" name="Genero" value="Masculino" required> 
-                    <label for="Masculino">Masculino</label>
-                    
-                    <!-- Se corrigió 'values' por 'value' -->
-                    <input type="radio" id="Otro" name="Genero" value="Otro" required> 
-                    <label for="Otro">Otro</label>
-                </div>
-                <div>
-                    <button type="submit"> Guardar </button>
-                </div>
-                <!-- Se eliminó el espacio en el ID para que coincida con JS -->
-                <p id="MensajeRegistro" role="status" aria-live="polite" style="color: red;"></p>
-            </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>Registro de Asociado - CLUB ACERIAS</title>
+    <style>
+        :root {
+            --morado-oscuro: #3b1868;
+            --morado-principal: #6d28d9;
+            --morado-medio: #8b5cf6;
+            --morado-suave: #f3e8ff;
+            --morado-borde: #e9d5ff;
+            --fondo-app: #f7f5fc;
+            --texto-principal: #1e1b2e;
+            --texto-suave: #645d7a;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #ede9fe 0%, var(--fondo-app) 45%, #f3f0fa 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar-morado {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 60%, var(--morado-medio) 100%);
+            color: #ffffff;
+            padding: 18px 28px;
+            box-shadow: 0 8px 24px rgba(76, 29, 149, 0.18);
+        }
+
+        .btn-salir-morado {
+            background-color: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-salir-morado:hover {
+            background-color: #ffffff;
+            color: var(--morado-oscuro);
+            border-color: #ffffff;
+        }
+
+        .tarjeta-registro {
+            background: #ffffff;
+            border: 1px solid var(--morado-borde);
+            border-radius: 18px;
+            box-shadow: 0 12px 32px rgba(88, 28, 135, 0.08);
+            max-width: 560px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .encabezado-registro {
+            background: linear-gradient(120deg, var(--morado-oscuro) 0%, var(--morado-principal) 100%);
+            color: #ffffff;
+            padding: 20px 26px;
+        }
+
+        .form-label {
+            color: var(--morado-oscuro);
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border-color: #ddd6fe;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--morado-medio);
+            box-shadow: 0 0 0 0.2rem rgba(109, 40, 217, 0.16);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--morado-principal);
+            border-color: var(--morado-principal);
+        }
+
+        .btn-morado {
+            background: linear-gradient(135deg, var(--morado-principal), var(--morado-medio));
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-morado:hover {
+            color: #ffffff;
+            opacity: 0.96;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(109, 40, 217, 0.26);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar-morado d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-plus-fill fs-4"></i>
+            <h4 class="mb-0 fw-bold">CLUB ACERIAS</h4>
         </div>
 
-        <!-- Script de validación local -->
-        <script>
-            function validarFormulario(event) {
-                const form = document.getElementById('FormRegistro');
-                const password = document.getElementById('contraseña');
-                const confirmarPassword = document.getElementById('confirmarContraseña');
-                const email = document.getElementById('email');
-                const mensaje = document.getElementById('MensajeRegistro');
+        <a class="btn btn-salir-morado btn-sm" href="login.html">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+        </a>
+    </header>
 
-                mensaje.textContent = '';
+    <main class="container py-4 d-flex justify-content-center align-items-center flex-grow-1">
+        <div class="tarjeta-registro">
+            <div class="encabezado-registro">
+                <h5 class="mb-1 fw-bold">
+                    <i class="bi bi-card-checklist me-2"></i>Registro de Asociado - Acerías
+                </h5>
+                <p class="mb-0 small opacity-75">Completa tus datos para crear tu cuenta en el club.</p>
+            </div>
 
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    return false;
-                }
+            <form id="FormRegistro" action="../Modelos/guardarAsociado.php" method="POST" onsubmit="return validarFormulario(event)" class="p-4">
+                <div class="row g-3">
+                    <div class="col-md-6 grupo-input">
+                        <label for="Documento" class="form-label">Documento</label>
+                        <input id="Documento" type="number" name="documento" class="form-control" required placeholder="Ejemplo: 1053555550">
+                    </div>
 
-                if (password.value.length < 8) {
-                    mensaje.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
-                    password.focus();
-                    return false;
-                }
+                    <div class="col-md-6 grupo-input">
+                        <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input id="fechaNacimiento" type="date" name="fechaNacimiento" class="form-control" required>
+                    </div>
 
-                if (password.value !== confirmarPassword.value) {
-                    mensaje.textContent = 'Las contraseñas no coinciden.';
-                    confirmarPassword.focus();
-                    return false;
-                }
+                    <div class="col-md-6 grupo-input">
+                        <label for="Nombre" class="form-label">Nombres</label>
+                        <input id="Nombre" type="text" name="Nombre" class="form-control" required placeholder="Ingrese su nombre completo">
+                    </div>
 
-                if (!email.validity.valid) {
-                    mensaje.textContent = 'Ingrese un correo electrónico válido.';
-                    email.focus();
-                    return false;
-                }
+                    <div class="col-md-6 grupo-input">
+                        <label for="Apellidos" class="form-label">Apellidos</label>
+                        <input id="Apellidos" type="text" name="Apellidos" class="form-control" required placeholder="Ingrese sus apellidos completos">
+                    </div>
 
-                return true;
+                    <div class="col-md-6 grupo-input">
+                        <label for="Ciudad" class="form-label">Ciudad</label>
+                        <select id="Ciudad" name="Ciudad" class="form-select" required>
+                            <option value="Sogamoso">Sogamoso</option>
+                            <option value="Duitama">Duitama</option>
+                            <option value="Tunja">Tunja</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 grupo-input">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input id="telefono" type="tel" name="telefono" class="form-control" required placeholder="Ejemplo: 3225828590">
+                    </div>
+
+                    <div class="col-12 grupo-input">
+                        <label for="direccionResidencia" class="form-label">Dirección de Residencia</label>
+                        <input id="direccionResidencia" type="text" name="direccionResidencia" class="form-control" required placeholder="Ejemplo: Calle 24">
+                    </div>
+
+                    <div class="col-12 grupo-input">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input id="email" type="email" name="email" class="form-control" required placeholder="Ejemplo: pepita@gmail.com">
+                    </div>
+
+                    <div class="col-md-6 grupo-input">
+                        <label for="contraseña" class="form-label">Contraseña</label>
+                        <input id="contraseña" type="password" name="contraseña" class="form-control" required placeholder="Mínimo 8 caracteres">
+                    </div>
+
+                    <div class="col-md-6 grupo-input">
+                        <label for="confirmarContraseña" class="form-label">Confirmar Contraseña</label>
+                        <input id="confirmarContraseña" type="password" name="confirmarContraseña" class="form-control" required placeholder="Repita su contraseña">
+                    </div>
+
+                    <div class="col-12 grupo-input">
+                        <label class="form-label d-block mb-2">Género</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="Femenino" name="Genero" value="Femenino" required>
+                                <label class="form-check-label" for="Femenino">Femenino</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="Masculino" name="Genero" value="Masculino" required>
+                                <label class="form-check-label" for="Masculino">Masculino</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="Otro" name="Genero" value="Otro" required>
+                                <label class="form-check-label" for="Otro">Otro</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="MensajeRegistro" role="status" aria-live="polite" class="small fw-bold mt-3 mb-2 text-danger"></p>
+
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-morado">
+                        <i class="bi bi-check-circle me-1"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function validarFormulario(event) {
+            const form = document.getElementById('FormRegistro');
+            const password = document.getElementById('contraseña');
+            const confirmarPassword = document.getElementById('confirmarContraseña');
+            const email = document.getElementById('email');
+            const mensaje = document.getElementById('MensajeRegistro');
+
+            mensaje.textContent = '';
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
             }
-        </script>
-        
-        <!-- Tu archivo controlador externo (asegúrate de que exista en esa ruta) -->
-        <script src="../Controladores/asociado.js"></script>
-    </body>
+
+            if (password.value.length < 8) {
+                mensaje.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
+                password.focus();
+                return false;
+            }
+
+            if (password.value !== confirmarPassword.value) {
+                mensaje.textContent = 'Las contraseñas no coinciden.';
+                confirmarPassword.focus();
+                return false;
+            }
+
+            if (!email.validity.valid) {
+                mensaje.textContent = 'Ingrese un correo electrónico válido.';
+                email.focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../Controladores/asociado.js"></script>
+</body>
+
 </html>

@@ -130,6 +130,16 @@
             background-color: #faf5ff;
         }
 
+        .badge-inscrito {
+            background-color: var(--morado-suave);
+            color: var(--morado-oscuro);
+            border: 1px solid var(--morado-borde);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
         .modal-content {
             border: 1px solid var(--morado-borde);
             border-radius: 18px;
@@ -155,7 +165,9 @@
         </div>
     </header>
 
-    <main class="container py-4" style="max-width: 1020px;">
+    <main class="container py-4" style="max-width: 1080px;">
+        <div id="mensajeActividad" class="mb-3" role="status" aria-live="polite"></div>
+
         <div class="card card-estetica">
             <div class="card-header-morado d-flex align-items-center gap-2">
                 <i class="bi bi-table fs-5"></i>
@@ -171,12 +183,13 @@
                                 <th>Fecha</th>
                                 <th>Municipio</th>
                                 <th>Total Recaudado</th>
+                                <th id="encabezadoInscripcion">Inscripción</th>
                                 <th id="encabezadoAcciones" class="d-none">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="listaActividades">
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Cargando actividades...</td>
+                                <td colspan="5" class="text-center py-4 text-muted">Cargando actividades...</td>
                             </tr>
                         </tbody>
                     </table>

@@ -1,11 +1,30 @@
 const listaActividades = document.getElementById("listaActividades");
+const mensajeActividad = document.getElementById("mensajeActividad");
 let esAdministrador = false;
 let actividades = [];
+let actividadesInscritas = new Set();
 let accionesConfiguradas = false;
 const formularioActividad = document.getElementById("formActividad");
 const modalActividad = new bootstrap.Modal(document.getElementById("modalActividad"));
 
-async function solicitarApi(metodo, datos) {
+const URL_ACTIVIDADES = "../Modelos/gestionarActividades.php";
+const URL_INSCRIPCION = "../Modelos/inscribirActividad.php";
+
+function mostrarAlerta(texto, tipo = "info") {
+    if (!mensajeActividad) {
+        alert(texto);
+        return;
+    }
+
+    mensajeActividad.innerHTML = `
+        <div class="alert alert-${tipo} alert-dismissible fade show rounded-3 mb-0" role="alert">
+            ${texto}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    `;
+}
+
+async function solicitarEndpoint(url, metodo, datos) {
     const opciones = {
         method: metodo,
         headers: { "Content-Type": "application/json" },
@@ -16,27 +35,45 @@ async function solicitarApi(metodo, datos) {
         opciones.body = JSON.stringify(datos);
     }
 
-    const respuesta = await fetch("../Modelos/gestionarActividades.php", opciones);
+    const respuesta = await fetch(url, opciones);
     const resultado = await respuesta.json();
 
     if (respuesta.status === 401) {
         window.location.href = "login.html";
+        return null;
     }
 
     if (!respuesta.ok || !resultado.success) {
         throw new Error(resultado.message || resultado.mensaje || "Error en la solicitud");
     }
+
     return resultado;
+}
+
+async function solicitarApi(metodo, datos) {
+    return solicitarEndpoint(URL_ACTIVIDADES, metodo, datos);
 }
 
 async function cargarActividades() {
     try {
-        const resultado = await solicitarApi("GET");
-        esAdministrador = resultado.rol === "admin";
+        const [resultadoActividades, resultadoInscripciones] = await Promise.all([
+            solicitarApi("GET"),
+            solicitarEndpoint(URL_INSCRIPCION, "GET").catch(() => ({ inscritas: [] }))
+        ]);
+
+        if (!resultadoActividades) return;
+
+        const rol = String(resultadoActividades.rol || "").toLowerCase();
+        esAdministrador = rol === "admin" || rol === "administrador";
+        actividadesInscritas = new Set(
+            Array.isArray(resultadoInscripciones?.inscritas)
+                ? resultadoInscripciones.inscritas.map(id => Number(id))
+                : []
+        );
 
         configurarAcciones();
 
-        actividades = resultado.actividades;
+        actividades = resultadoActividades.actividades || [];
         mostrarActividades();
     } catch (error) {
         alert("Error al cargar las actividades: " + error.message);
@@ -45,11 +82,13 @@ async function cargarActividades() {
 
 function mostrarActividades() {
     listaActividades.replaceChildren();
+    const columnasBase = 5; // Actividad, Fecha, Municipio, Total Recaudado, Inscripción
+    const totalColumnas = esAdministrador ? columnasBase + 1 : columnasBase;
 
     if (actividades.length === 0) {
         const fila = document.createElement("tr");
         const celda = document.createElement("td");
-        celda.colSpan = esAdministrador ? 5 : 4;
+        celda.colSpan = totalColumnas;
         celda.className = "text-center py-4 text-muted";
         celda.textContent = "No hay actividades disponibles.";
         fila.append(celda);
@@ -67,7 +106,8 @@ function mostrarActividades() {
                 actividad.totalRecaudado === null
                     ? "Pendiente"
                     : Number(actividad.totalRecaudado).toLocaleString("es-CO", { style: "currency", currency: "COP" })
-            )
+            ),
+            crearCeldaInscripcion(actividad)
         );
 
         if (esAdministrador) {
@@ -77,12 +117,14 @@ function mostrarActividades() {
             const botonEditar = document.createElement("button");
             botonEditar.type = "button";
             botonEditar.className = "btn btn-sm btn-outline-primary me-2";
+            botonEditar.title = "Editar actividad";
             botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
             botonEditar.addEventListener("click", () => abrirEdicion(actividad));
 
             const botonEliminar = document.createElement("button");
             botonEliminar.type = "button";
             botonEliminar.className = "btn btn-sm btn-outline-danger";
+            botonEliminar.title = "Eliminar actividad";
             botonEliminar.innerHTML = '<i class="bi bi-trash-fill"></i>';
             botonEliminar.addEventListener("click", () => eliminarActividad(actividad));
 
@@ -91,6 +133,49 @@ function mostrarActividades() {
         }
         listaActividades.append(fila);
     });
+}
+
+function crearCeldaInscripcion(actividad) {
+    const celda = document.createElement("td");
+    celda.className = "text-nowrap";
+    const idAct = Number(actividad.idActividad);
+
+    if (actividadesInscritas.has(idAct)) {
+        const badge = document.createElement("span");
+        badge.className = "badge-inscrito";
+        badge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Inscrito';
+        celda.append(badge);
+        return celda;
+    }
+
+    const botonInscribir = document.createElement("button");
+    botonInscribir.type = "button";
+    botonInscribir.className = "btn btn-sm btn-morado";
+    botonInscribir.innerHTML = '<i class="bi bi-person-plus me-1"></i>Inscribirme';
+    botonInscribir.addEventListener("click", () => inscribirseActividad(actividad, botonInscribir));
+
+    celda.append(botonInscribir);
+    return celda;
+}
+
+async function inscribirseActividad(actividad, boton) {
+    boton.disabled = true;
+    const textoOriginal = boton.innerHTML;
+    boton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Inscribiendo...';
+
+    try {
+        const resultado = await solicitarEndpoint(URL_INSCRIPCION, "POST", {
+            idActividad: Number(actividad.idActividad)
+        });
+        if (!resultado) return;
+
+        mostrarAlerta(resultado.message || `Te has inscrito en "${actividad.nombreActividad}".`, "success");
+        await cargarActividades();
+    } catch (error) {
+        boton.disabled = false;
+        boton.innerHTML = textoOriginal;
+        mostrarAlerta(error.message, "danger");
+    }
 }
 
 function crearCelda(texto) {
