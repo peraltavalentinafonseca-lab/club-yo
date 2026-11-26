@@ -3,39 +3,61 @@ session_start();
 
 header("Content-Type: application/json; charset=UTF-8");
 
-function leerDatos() {
-    $datos = json_decode(file_get_contents("php://input"), true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
+function leerDatos(): array {
+    $raw = file_get_contents("php://input");
+    $datos = json_decode($raw, true);
+    if (!is_array($datos) || json_last_error() !== JSON_ERROR_NONE) {
         http_response_code(400);
         throw new Exception("Error al decodificar JSON: " . json_last_error_msg());
     }
     return $datos;
 }
 
-function validarActividad($datos) {
+function validarActividad(array $datos): array {
     $nombre = $datos['nombreActividad'] ?? null;
-    $fecha = $datos['fechaEvento'] ?? null;
+    $fecha = trim((string)($datos['fechaEvento'] ?? ''));
     $municipio = $datos['municipio'] ?? null;
 
-    if (!is_string($nombre) || trim($nombre) === "" || strlen($nombre) > 100 || !is_string($municipio) || trim($municipio) === "" || strlen($municipio) > 50) {
+    // Opcional: si envías total recaudado desde el formulario/API
+    $recaudoRaw = $datos['totalRecaudado'] ?? $datos['recaudo'] ?? 0;
+    $totalRecaudado = filter_var($recaudoRaw, FILTER_VALIDATE_FLOAT);
+    if ($totalRecaudado === false || $totalRecaudado < 0) {
         http_response_code(400);
-        throw new Exception("Ingrese un nombre y municipio validos");
+        throw new Exception("Ingrese un total recaudado válido (mayor o igual a 0)");
     }
+
+    if (!is_string($nombre) || trim($nombre) === "" || mb_strlen(trim($nombre)) > 100 ||
+        !is_string($municipio) || trim($municipio) === "" || mb_strlen(trim($municipio)) > 50) {
+        http_response_code(400);
+        throw new Exception("Ingrese un nombre y municipio válidos");
+    }
+
+    $dt = DateTime::createFromFormat('Y-m-d', $fecha);
+    if (!$dt || $dt->format('Y-m-d') !== $fecha) {
+        http_response_code(400);
+        throw new Exception("Ingrese una fecha de evento válida (AAAA-MM-DD)");
+    }
+
+    $montoClub = round($totalRecaudado * 0.5, 2);
+    $montoParticipantes = round($totalRecaudado - $montoClub, 2);
 
     return [
         "nombreActividad" => trim($nombre),
         "fechaEvento" => $fecha,
-        "municipio" => trim($municipio)
+        "municipio" => trim($municipio),
+        "totalRecaudado" => round((float)$totalRecaudado, 2),
+        "montoClub" => $montoClub,
+        "montoParticipantes" => $montoParticipantes
     ];
 }
 
-function validarId($id) {
+function validarId($id): int {
     $idActividad = filter_var($id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
     if ($idActividad === false) {
         http_response_code(400);
         throw new Exception("El identificador de la actividad no es válido");
     }
-    return $idActividad;
+    return (int)$idActividad;
 }
 
 try {
@@ -63,10 +85,23 @@ try {
 
     switch ($metodo) {
         case "GET":
+            $actividades = $actividad->obtenerActividades();
+            // Si cada actividad trae total_recaudado / totalRecaudado y cantidad_participantes, anexamos el desglose 50/50
+            foreach ($actividades as &$item) {
+                $total = (float)($item['totalRecaudado'] ?? $item['total_recaudado'] ?? 0);
+                $participantes = (int)($item['cantidadParticipantes'] ?? $item['total_participantes'] ?? 0);
+                $fondoClub = round($total * 0.5, 2);
+                $bolsaParticipantes = round($total - $fondoClub, 2);
+                $item['fondoClub'] = $fondoClub;
+                $item['bolsaParticipantes'] = $bolsaParticipantes;
+                $item['valorPorParticipante'] = $participantes > 0 ? round($bolsaParticipantes / $participantes, 2) : 0.0;
+            }
+            unset($item);
+
             $resultado = [
                 "success" => true,
                 "rol" => $rolSesion,
-                "actividades" => $actividad->obtenerActividades()
+                "actividades" => $actividades
             ];
             http_response_code(200);
             break;
@@ -76,7 +111,12 @@ try {
             $actividad->guardar($datos);
             $resultado = [
                 "success" => true,
-                "message" => "Actividad creada exitosamente"
+                "message" => "Actividad creada exitosamente",
+                "reparto" => [
+                    "totalRecaudado" => $datos["totalRecaudado"],
+                    "fondoClub" => $datos["montoClub"],
+                    "bolsaParticipantes" => $datos["montoParticipantes"]
+                ]
             ];
             http_response_code(201);
             break;
@@ -92,7 +132,12 @@ try {
             }
             $resultado = [
                 "success" => true,
-                "message" => "Actividad actualizada exitosamente"
+                "message" => "Actividad actualizada exitosamente",
+                "reparto" => [
+                    "totalRecaudado" => $datos["totalRecaudado"],
+                    "fondoClub" => $datos["montoClub"],
+                    "bolsaParticipantes" => $datos["montoParticipantes"]
+                ]
             ];
             http_response_code(200);
             break;
@@ -121,6 +166,9 @@ try {
         "message" => "Error en la base de datos: " . $e->getMessage()
     ]);
 } catch (Exception $e) {
+    if (http_response_code() === 200) {
+        http_response_code(400);
+    }
     echo json_encode([
         "success" => false,
         "message" => $e->getMessage()

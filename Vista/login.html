@@ -162,22 +162,22 @@
             <div class="card-body p-4">
                 <form id="formLogin">
                     <div class="mb-3">
-                        <label for="documento" class="form-label">Documento de identidad</label>
+                        <label for="email" class="form-label">Correo electrónico</label>
                         <div class="input-group">
                             <span class="input-group-text input-group-text-morado">
-                                <i class="bi bi-person-vcard"></i>
+                                <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="text" id="documento" name="documento" class="form-control form-control-morado" placeholder="Ingresa tu documento" required autofocus>
+                            <input type="email" id="email" name="email" class="form-control form-control-morado" placeholder="Ingresa tu correo electrónico" required autofocus>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="clave" class="form-label">Contraseña</label>
+                        <label for="password" class="form-label">Contraseña</label>
                         <div class="input-group">
                             <span class="input-group-text input-group-text-morado">
                                 <i class="bi bi-key"></i>
                             </span>
-                            <input type="password" id="clave" name="clave" class="form-control form-control-morado con-boton" placeholder="Ingresa tu contraseña" required>
+                            <input type="password" id="password" name="password" class="form-control form-control-morado con-boton" placeholder="Ingresa tu contraseña" required>
                             <button type="button" id="toggleClave" class="btn btn-ver-clave" aria-label="Mostrar o ocultar contraseña">
                                 <i class="bi bi-eye" id="iconoClave"></i>
                             </button>
@@ -204,7 +204,7 @@
     <script src="../Controladores/login.js"></script>
     <script>
         const btnToggleClave = document.getElementById("toggleClave");
-        const inputClave = document.getElementById("clave");
+        const inputClave = document.getElementById("password");
         const iconoClave = document.getElementById("iconoClave");
 
         btnToggleClave?.addEventListener("click", () => {
